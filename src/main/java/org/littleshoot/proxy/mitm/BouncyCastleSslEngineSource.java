@@ -1,7 +1,5 @@
 package org.littleshoot.proxy.mitm;
 
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,27 +27,29 @@ import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManager;
 
 import org.apache.commons.io.IOUtils;
-import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.littleshoot.proxy.SslEngineSource;
+import org.littleshoot.proxy.mitm.bouncycastle.JcaPEMWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+
 /**
  * A {@link SslEngineSource} which creates a key store with a Root Certificate
  * Authority. The certificates are generated lazily if the given key store file
  * doesn't yet exist.
- * 
+ *
  * The root certificate is exported in PEM format to be used in a browser. The
  * proxy application presents for every host a dynamically created certificate
  * to the browser, signed by this certificate authority.
- * 
+ *
  * This facilitates the proxy to handle as a "Man In The Middle" to filter the
  * decrypted content in clear text.
- * 
+ *
  * The hard part was done by mawoki. It's derived from Zed Attack Proxy (ZAP).
  * ZAP is an HTTP/HTTPS proxy for assessing web application security. Copyright
  * 2011 mawoki@ymail.com Licensed under the Apache License, Version 2.0
@@ -84,15 +84,15 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
      * initializes a SSL context. Exceptions will be thrown to let the manager
      * decide how to react. Don't install a MITM manager in the proxy in case of
      * a failure.
-     * 
+     *
      * @param authority
      *            a parameter object to provide personal informations of the
      *            Certificate Authority and the dynamic certificates.
-     * 
+     *
      * @param trustAllServers
-     * 
+     *
      * @param sendCerts
-     * 
+     *
      * @param sslContexts
      *            a cache to store dynamically created server certificates.
      *            Generation takes between 50 to 500ms, but only once per
@@ -118,13 +118,13 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
      * dynamically created server certificates. Exceptions will be thrown to let
      * the manager decide how to react. Don't install a MITM manager in the
      * proxy in case of a failure.
-     * 
+     *
      * @param authority
      *            a parameter object to provide personal informations of the
      *            Certificate Authority and the dynamic certificates.
-     * 
+     *
      * @param trustAllServers
-     * 
+     *
      * @param sendCerts
      */
     public BouncyCastleSslEngineSource(Authority authority,
@@ -143,7 +143,7 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
     }
 
     private void filterWeakCipherSuites(SSLEngine sslEngine) {
-        List<String> ciphers = new LinkedList<String>();
+        List<String> ciphers = new LinkedList<>();
         for (String each : sslEngine.getEnabledCipherSuites()) {
             if (each.equals("TLS_DHE_RSA_WITH_AES_128_CBC_SHA") || each.equals("TLS_DHE_RSA_WITH_AES_256_CBC_SHA")) {
                 LOG.debug("Removed cipher {}", each);
@@ -166,7 +166,8 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
         }
     }
 
-    public SSLEngine newSslEngine() {
+    @Override
+	public SSLEngine newSslEngine() {
         SSLEngine sslEngine = sslContext.createSSLEngine();
         filterWeakCipherSuites(sslEngine);
         return sslEngine;
@@ -282,18 +283,18 @@ public class BouncyCastleSslEngineSource implements SslEngineSource {
      * Generates an 1024 bit RSA key pair using SHA1PRNG. Thoughts: 2048 takes
      * much longer time on older CPUs. And for almost every client, 1024 is
      * sufficient.
-     * 
+     *
      * Derived from Zed Attack Proxy (ZAP). ZAP is an HTTP/HTTPS proxy for
      * assessing web application security. Copyright 2011 mawoki@ymail.com
      * Licensed under the Apache License, Version 2.0
-     * 
+     *
      * @param commonName
      *            the common name to use in the server certificate
-     * 
+     *
      * @param subjectAlternativeNames
      *            a List of the subject alternative names to use in the server
      *            certificate, could be empty, but must not be null
-     * 
+     *
      * @see org.parosproxy.paros.security.SslCertificateServiceImpl.
      *      createCertForHost(String)
      * @see org.parosproxy.paros.network.SSLConnector.getTunnelSSLSocketFactory(

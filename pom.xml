@@ -1,14 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.ganskef</groupId>
-    <artifactId>littleproxy-mitm</artifactId>
+    <groupId>com.github.felipebn</groupId>
+    <artifactId>littleproxy-mitm-bc150</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.1-SNAPSHOT</version>
-    <name>LittleProxy - Man-In-The-Middle</name>
-    <description>LittleProxy is a high performance HTTP proxy written in Java and using the Netty networking framework.
+    <version>1.1.1</version>
+    <name>LittleProxy - Man-In-The-Middle - BouncyCastle 1.50 Fork</name>
+    <description>
+    	LittleProxy is a high performance HTTP proxy written in Java and using the Netty networking framework.
 
-This is an extension module to enable Man-In-The-Middle impersonation for HTTPS.</description>
-    <url>https://github.com/ganskef/LittleProxy-mitm</url>
+		This is an extension module to enable Man-In-The-Middle impersonation for HTTPS.
+	
+		This fork downgrades the BouncyCastle dependency from 1.51 to 1.50 as
+		a way to make it compatible with Atlassian products.
+	</description>
+    <url>https://github.com/felipebn/LittleProxy-mitm</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,7 +23,7 @@ This is an extension module to enable Man-In-The-Middle impersonation for HTTPS.
         <!-- Versions should better be retrieved from a parent module. -->
         <netty.version>4.0.36.Final</netty.version>
         <slf4j.version>1.7.21</slf4j.version>
-        <bouncycastle.version>1.51</bouncycastle.version>
+        <bouncycastle.version>1.50</bouncycastle.version>
         <littleproxy.version>1.1.0</littleproxy.version>
         <junit.version>4.12</junit.version>
         <hamcrest.version>1.0.0.1</hamcrest.version>
@@ -38,9 +43,9 @@ This is an extension module to enable Man-In-The-Middle impersonation for HTTPS.
     </issueManagement>
 
     <scm>
-        <connection>scm:git:https://ganskef@github.com/ganskef/LittleProxy-mitm.git</connection>
-        <developerConnection>scm:git:git@github.com:ganskef/LittleProxy-mitm.git</developerConnection>
-        <url>scm:git:git@github.com:ganskef/LittleProxy-mitm.git</url>
+        <connection>scm:git:https://felipebn@github.com/felipebn/LittleProxy-mitm.git</connection>
+        <developerConnection>scm:git:git@github.com:felipebn/LittleProxy-mitm.git</developerConnection>
+        <url>scm:git:git@github.com:felipebn/LittleProxy-mitm.git</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -233,18 +238,6 @@ This is an extension module to enable Man-In-The-Middle impersonation for HTTPS.
             </plugin>
 
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.3</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5</version>
@@ -344,18 +337,19 @@ This is an extension module to enable Man-In-The-Middle impersonation for HTTPS.
             <name>Frank Ganske</name>
             <email>frank.ganske@web.de</email>
         </developer>
+        <developer>
+            <name>Felipe Nascimento</name>
+            <email>felipe.nascimento1@gmail.com</email>
+        </developer>
     </developers>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>bintray-felipebn-maven</id>
+			<name>felipebn-maven</name>
+			<url>https://api.bintray.com/maven/felipebn/maven/LittleProxy-mitm/;publish=1</url>
+		</repository>
+	</distributionManagement>
 
     <profiles>
         <profile>
