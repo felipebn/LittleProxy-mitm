@@ -1,6 +1,14 @@
 [![Build Status](https://travis-ci.org/ganskef/LittleProxy-mitm.png?branch=master)](https://travis-ci.org/ganskef/LittleProxy-mitm)
 [![Published Version](https://img.shields.io/maven-central/v/com.github.ganskef/littleproxy-mitm.svg)](http://search.maven.org/#search|ga|1|g%3A%22com.github.ganskef%22%20AND%20a%3A%22littleproxy-mitm%22)<br />
 
+LittleProxy - Man-In-The-Middle - BC-1.50 Fork
+===============================
+
+This fork downgrades the BouncyCastle dependency 1.51 to 1.50. 
+Features needed from 1.51 were backported.
+
+**Motivation:** This library was required to embed a forwarding proxy into a Atlassian plugin and Atlassian products currently depends on BouncyCastle 1.50.
+
 LittleProxy - Man-In-The-Middle
 ===============================
 
